@@ -19,6 +19,23 @@ jobs:
         with:
           submodules: true
           lfs: false
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+          check-latest: true
+      - name: Set environment variable, install dependencies and build
+        run: |
+          echo "VITE_AZURE_BACKEND_DOMAIN=${{ secrets.VITE_AZURE_BACKEND_DOMAIN }}" >> $GITHUB_ENV
+          npm install
+          npm run build
+        env:
+          VITE_AZURE_BACKEND_DOMAIN: ${{ secrets.VITE_AZURE_BACKEND_DOMAIN }}
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: drop
+          path: dist
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
